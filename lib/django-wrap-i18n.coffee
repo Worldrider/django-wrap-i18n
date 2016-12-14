@@ -8,10 +8,21 @@ module.exports =
     if editor = atom.workspace.getActiveTextEditor()
       editor.getSelections().map((item) -> wrapSelection(editor, item))
 
+getPath = () ->
+  return atom.workspace.getActivePaneItem()?.buffer.file.getPath()
+
+getExtension = (path) ->
+  return path.substr(path.lastIndexOf('.') + 1);
+
 wrapSelection = (editor, selection) ->
   text = selection.getText()
-  path = atom.workspace.getActivePaneItem()?.buffer.file.getPath()
-  extension = path.substr(path.lastIndexOf('.') + 1);
+  path = getPath()
+  extension = getExtension(path)
+
+  imports = {
+    "py": "from django.utils.translation import ugettext_lazy as _",
+    "html": "{% load i18n %}",
+  }
 
   #  match bracket
   b = (x) ->
@@ -19,10 +30,13 @@ wrapSelection = (editor, selection) ->
       return ""
     return "\""
 
-  resolver = {
+  functions = {
     "py": (x) -> ['_(', b(x), x, b(x), ')'].join(''),
     "html": (x) -> ['{% trans ', b(x), x, b(x), ' %}'].join(''),
     "js": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
     "coffee": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
   }
-  selection.insertText(resolver[extension](text))
+  if text.length > 0
+    selection.insertText(functions[extension](text))
+  else
+    selection.insertText(imports[extension])

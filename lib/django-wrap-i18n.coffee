@@ -13,11 +13,15 @@ wrapSelection = (editor, selection) ->
   path = atom.workspace.getActivePaneItem()?.buffer.file.getPath()
   extension = path.substr(path.lastIndexOf('.') + 1);
 
+  #  match bracket
+  b = (x) ->
+    if x[0] == "\"" && x[x.length-1] == "\"" || x[0] == "\'" && x[x.length-1] == "\'"
+      return ""
+    return "\""
   resolver = {
-    "py": (x) -> ['_(\"', x, '\")'].join(''),
-    "html": (x) -> ['{% trans \"', x, '\" %}'].join(''),
-    "js": (x) -> ['gettext(\"', text, '\")'].join(''),
-    "coffee": (x) -> ['gettext(\"', text, '\")'].join(''),
+    "py": (x) -> ['_(', b(x), x, b(x),')'].join(''),
+    "html": (x) -> ['{% trans ', b(x), x, b(x), ' %}'].join(''),
+    "js": (x) -> ['gettext(', b(x), text, b(x), ')'].join(''),
+    "coffee": (x) -> ['gettext(', b(x), text, b(x), ')'].join(''),
   }
-
   selection.insertText(resolver[extension](text))

@@ -1,0 +1,22 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Django wrap in i18n'
+      'command': 'django-wrap-i18n:wrap'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Django wrap in i18n'
+      'submenu': [
+        {
+          'label': 'Wrap'
+          'command': 'django-wrap-i18n:wrap'
+        }
+      ]
+    ]
+  }
+]

@@ -18,10 +18,11 @@ wrapSelection = (editor, selection) ->
     if x[0] == "\"" && x[x.length-1] == "\"" || x[0] == "\'" && x[x.length-1] == "\'"
       return ""
     return "\""
+
   resolver = {
-    "py": (x) -> ['_(', b(x), x, b(x),')'].join(''),
+    "py": (x) -> ['_(', b(x), x, b(x), ')'].join(''),
     "html": (x) -> ['{% trans ', b(x), x, b(x), ' %}'].join(''),
-    "js": (x) -> ['gettext(', b(x), text, b(x), ')'].join(''),
-    "coffee": (x) -> ['gettext(', b(x), text, b(x), ')'].join(''),
+    "js": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
+    "coffee": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
   }
   selection.insertText(resolver[extension](text))

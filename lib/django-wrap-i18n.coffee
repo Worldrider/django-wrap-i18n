@@ -12,12 +12,18 @@ getPath = () ->
   return atom.workspace.getActivePaneItem()?.buffer.file.getPath()
 
 getExtension = (path) ->
-  return path.substr(path.lastIndexOf('.') + 1);
+  if path.includes(".")
+    return path.substr(path.lastIndexOf('.') + 1);
+  return ""
 
 wrapSelection = (editor, selection) ->
   text = selection.getText()
   path = getPath()
   extension = getExtension(path)
+
+  # set default
+  if extension.length == 0
+    extension = "html"
 
   imports = {
     "py": "from django.utils.translation import ugettext_lazy as _",
@@ -30,12 +36,19 @@ wrapSelection = (editor, selection) ->
       return ""
     return "\""
 
+  py = (x) -> ['_(', b(x), x, b(x), ')'].join('')
+  html = (x) -> ['{% trans ', b(x), x, b(x), ' %}'].join('')
+  js = (x) -> ['gettext(', b(x), x, b(x), ')'].join('')
+
   functions = {
-    "py": (x) -> ['_(', b(x), x, b(x), ')'].join(''),
-    "html": (x) -> ['{% trans ', b(x), x, b(x), ' %}'].join(''),
-    "js": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
-    "coffee": (x) -> ['gettext(', b(x), x, b(x), ')'].join(''),
+    "py": py,
+    "html": html,
+    "txt": html,
+    "eml": html,
+    "js": js,
+    "coffee": js
   }
+
   if text.length > 0
     selection.insertText(functions[extension](text))
   else

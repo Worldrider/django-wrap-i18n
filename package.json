@@ -1,7 +1,7 @@
 {
   "name": "django-wrap-i18n",
   "main": "./lib/django-wrap-i18n",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Wraps selected text in {% trans \"\" %}, _(\"\") or gettext(\"\")",
   "keywords": [],
   "activationCommands": {
